@@ -1,0 +1,73 @@
+model {
+		for ( i in 1 : numPts) {
+			Aobs[i] ~ dnorm(muA[i],taoA)
+			
+			Y[i]   <- 0.5/SCO 
+	        RM[i]  <- 0.5*RD[i]
+			
+			
+            # e- transport - e- transport (ATP-limited) determined CO2 assimilation
+			ANTT[i]   <- (-BBB[i]+sqrt(BBB[i]^2-4*AAA[i]*CCC[i]))/(2*AAA[i])
+			AAA[i]    <- X2[i]*AL*GM/0.047-(GBS+GM)
+			BBB[i]    <- ((X1[i]-RD[i])*(GBS+GM)+GM*(CI[i]*GBS+VP[i]-RM[i]+(X3[i]+X2[i]*OM[i])*GBS))+AL*GM/0.047*(X1[i]*Y[i]+RD[i]*X2[i])    
+			CCC[i]    <- -GM*(CI[i]*GBS+VP[i]-RM[i])*(X1[i]-RD[i])+GBS*GM*(X1[i]*Y[i]*OM[i]+RD[i]*(X3[i]+X2[i]*OM[i]))
+            X1[i]     <- (1-X)*JATP[i]/3
+			VP[i]     <- X*JATP[i]/2
+	        X2[i]     <- 7/3*Y[i]
+	        X3[i]     <- 0
+			
+	        #Enzyme - enzyme activity determined photosynthesis
+			ANPC[i]  <- -2*sqrt(QQ[i])*cos(THETA[i]/3)-P[i]/3
+			QQ[i]   <- (P[i]*P[i]-3*Q[i])/9
+			THETA[i]   <- arccos(RR[i]/sqrt(QQ[i]^3))
+			RR[i]   <- (2*P[i]^3-9*P[i]*Q[i]+27*R[i])/54
+			Q[i]    <- N[i]/K[i]
+			P[i]    <- M[i]/K[i]
+			R[i]    <- O[i]/K[i];
+			O[i]    <- RD[i]*(B[i]+(S3[i]+S2[i]*OM[i])*C[i])-S1[i]*(B[i]-C[i]*Y[i]*OM[i])
+			N[i]    <- B[i]+(S3[i]+S2[i]*OM[i])*C[i]+A[i]*(RD[i]-S1[i])-GBS*GM*(S1[i]*Y[i]*OM[i]+RD[i]*(S3[i]+S2[i]*OM[i]))+AL*C[i]/0.047/GBS*(S1[i]*Y[i]+S2[i]*RD[i])
+			M[i]    <- A[i]-(S3[i]+S2[i]*OM[i])*GBS*GM+(RD[i]-S1[i])*(GM+GBS)-AL/0.047*(S1[i]*Y[i]*GM+S2[i]*RD[i]*GM-S2[i]*C[i]/GBS)
+			K[i]    <- GM+GBS-S2[i]*AL*GM/0.047
+			
+			C[i] <- GBS*GM^2*(CI[i]+KP)
+			B[i] <- GM^2*(CI[i]*VPMAX+(CI[i]+KP)*(GBS*CI[i]-RM[i]))
+			A[i] <- GM*(RM[i]-VPMAX-CI[i]*(GM+2*GBS)-KP*(GM+GBS))
+			
+            S1[i]   <- VCMAX
+            S2[i]   <- KMC/KMO
+            S3[i]   <- KMC
+
+            # Enzyme activity - e- transport determined photosynthesis;
+			ANET[i]  <- -2*sqrt(QQT[i])*cos(THETAT[i]/3)-PT[i]/3
+			THETAT[i]<- arccos(RRT[i]/sqrt(QQT[i]^3))
+			QQT[i]   <- (PT[i]*PT[i]-3*QT[i])/9
+            RRT[i]   <- (2*PT[i]^3-9*PT[i]*QT[i]+27*RT[i])/54
+			
+			PT[i]    <- MT[i]/KT[i]
+            QT[i]    <- NT[i]/KT[i]
+            RT[i]    <- OT[i]/KT[i]
+			
+            KT[i]    <- GM+GBS-X2[i]*AL*GM/0.047
+            MT[i]    <- A[i]-(X3[i]+X2[i]*OM[i])*GBS*GM+(RD[i]-X1[i])*(GM+GBS)-AL/0.047*(X1[i]*Y[i]*GM+X2[i]*RD[i]*GM-X2[i]*C[i]/GBS)
+            NT[i]    <- B[i]+(X3[i]+X2[i]*OM[i])*C[i]+A[i]*(RD[i]-X1[i])-GBS*GM*(X1[i]*Y[i]*OM[i]+RD[i]*(X3[i]+S2[i]*OM[i]))+AL*C[i]/0.047/GBS*(X1[i]*Y[i]+X2[i]*RD[i])
+            OT[i]    <- RD[i]*(B[i]+(X3[i]+X2[i]*OM[i])*C[i])-X1[i]*(B[i]-C[i]*Y[i]*OM[i])
+
+            #e- transport - enzyme activity determined photosynthesis;
+			ANTE[i] <- (-BBBE[i]+sqrt(BBBE[i]^2-4*AAAE[i]*CCCE[i]))/(2*AAAE[i])
+			
+			AAAE[i]    <- S2[i]*AL*GM/0.047-(GBS+GM)
+            BBBE[i]    <- ((S1[i]-RD[i])*(GBS+GM)+GM*(CI[i]*GBS+VP[i]-RM[i]+(S3[i]+S2[i]*OM[i])*GBS))+AL*GM/0.047*(S1[i]*Y[i]+RD[i]*S2[i])
+            CCCE[i]    <- -GM*(CI[i]*GBS+VP[i]-RM[i])*(S1[i]-RD[i])+GBS*GM*(S1[i]*Y[i]*OM[i]+RD[i]*(S3[i]+S2[i]*OM[i]))
+	       
+            muA[i] <- min(ANET[i],ANTE[i],ANTT[i],ANPC[i])
+		}
+	
+	
+    sigA ~ dunif(0, 5)
+    taoA <- 1 / (sigA * sigA)
+
+    VPMAX ~ dunif(0, 300)
+    VCMAX ~ dunif(0, 200)
+    GM ~ dunif(0.1, 20)
+    GBS ~ dunif(1/1000, 20/1000)
+}

@@ -1,7 +1,7 @@
-code and workflows for a **3D C4 canopy photosynthesis modeling pipeline** that links:
-
+## A method to quantify 3D variation in photosynthetic ability in maize canopies
+The pipeline includes:
 - 3D canopy structure from point clouds  
-- RGB-based chlorophyll / SPAD estimation  
+- RGB-based SPAD estimation  
 - C4 leaf photosynthesis parameterization  
 - Canopy-scale photosynthesis simulation
   <img width="3341" height="2154" alt="Fig1" src="https://github.com/user-attachments/assets/8658969d-1957-4aec-88d0-1027c324d3bd" />

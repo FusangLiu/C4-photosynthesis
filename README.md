@@ -5,7 +5,7 @@ The pipeline includes:
 - C4 leaf photosynthesis parameterization  
 - Canopy-scale photosynthesis simulation
   <img width="3341" height="2154" alt="Fig1" src="https://github.com/user-attachments/assets/8658969d-1957-4aec-88d0-1027c324d3bd" />
-
+Fig. 1. The pipeline of the 3D canopy photosynthetic model. A, Gas exchange and fluorescence data of maize leaves with different SPAD values were used to estimate photosynthetic model parameters based on Bayesian inference, and then the relationships between SPAD and parameters were built. B, Point clouds were reconstructed with image series based on a deep-learning method (NeRFs, Neural Radiance Fields). C, The colour and scale of the point clouds were corrected, and then plant point clouds were extracted. The SPAD distribution was obtained via the DGGI estimated by RGB (red, green, blue) values of plant point clouds. D, Light distribution within the plant was calculated based on the meshed plant and the light environment via a ray tracing model. E, Based on information provided by A-D, the parameter distributions of the photosynthesis model, leaf temperature distribution, stomatal conductance distribution and photosynthesis rate distribution were obtained. 
 ## Refrence 
 Liu, F. et al. A method to quantify 3D variation in photosynthetic ability in maize canopies. Plant Physiol. 199, kiaf557 (2025). https://doi.org/10.1093/plphys/kiaf557
 
